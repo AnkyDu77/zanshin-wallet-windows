@@ -3,6 +3,7 @@ import uuid
 import hashlib
 import pickle
 import requests
+# from zipfile import ZipFile as zf
 
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5
@@ -29,10 +30,19 @@ def createWallet(password, blockHash, remoteNode):
     with open(os.path.join(os.path.join(Config().BASEDIR, 'keys'), f'{hsh}_pubKey.der'), 'wb') as pubFile:
         pubFile.write(pubKey)
 
+    # # Work with ZIP
+    # with zf(Config().BASEDIR, 'a') as zip:
+    #     zip.writestr(f'keys/{hsh}_pubKey.der', pubKey)
+
+
     prKey = key.export_key(format='DER', passphrase=password, pkcs=8,
                               protection="scryptAndAES128-CBC")
     with open(os.path.join(os.path.join(Config().BASEDIR, 'keys'), f'{hsh}_prKey.der'), 'wb') as prFile:
         prFile.write(prKey)
+
+    # # Work with ZIP
+    # with zf(Config().BASEDIR, 'a') as zip:
+    #     zip.writestr(f'keys/{hsh}_prKey.der', prKey)
 
     # Form address and return it to the user
     pubHash = hashlib.sha3_224(pubKey).hexdigest()
